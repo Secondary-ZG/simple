@@ -1,0 +1,220 @@
+package tk.mybatis.simple.mapper;
+
+import org.apache.ibatis.session.SqlSession;
+import org.junit.Assert;
+import org.junit.Test;
+import tk.mybatis.simple.mapper.base.BaseMapperTest;
+import tk.mybatis.simple.model.SysRole;
+import tk.mybatis.simple.model.SysUser;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Java Class
+ * Created By Secondary
+ * On 2019/7/7 16:09
+ * Description: 用户mapper测试类
+ */
+public class UserMappertest extends BaseMapperTest {
+
+    @Test
+    public void testSelectById() {
+        //获取SqlSession
+        SqlSession sqlSession = getSqlSession();
+        try {
+            //获取UserMapper接口
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            //调用selectById方法，查询用户id = 1的用户
+            SysUser sysUser = userMapper.selectById(1l);
+            //sysUser 不为空
+            Assert.assertNotNull(sysUser);
+            //userName = admin
+            Assert.assertEquals("admin", sysUser.getUserName());
+        } finally {
+            //不要忘记关闭SqlSession
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testSelectAll() {
+        //获取Sqlssesion
+        SqlSession sqlSession = getSqlSession();
+        //获取UserMapper接口
+        try {
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            //调用selectAll方法查询所有用户
+            List<SysUser> sysUserList = userMapper.selectAll();
+            //结果不为空
+            Assert.assertNotNull(sysUserList);
+            //用户数量大于零
+            Assert.assertTrue(sysUserList.size() > 0);
+        } finally {
+            //不要忘记关闭SqlSession
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testSelectRolesByUserId() {
+        //获取SqlSession
+        SqlSession sqlSession = getSqlSession();
+        try {
+            //获取UserMapper接口
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            //调用selectRolesByUserId方法查询用户的角色
+            List<SysRole> roleList = userMapper.selectRolesByUserId(1L);
+            //结果不为空
+            Assert.assertNotNull(roleList);
+            //角色数量大于0个
+            Assert.assertTrue(roleList.size() > 0);
+        } finally {
+            //不要忘记关闭SqlSession
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testInsert() {
+        //获取SqlSession
+        SqlSession sqlSession = getSqlSession();
+        //获取UserMapper接口
+        try {
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            //创建一个SysUser对象
+            SysUser sysUser = new SysUser();
+            sysUser.setUserName("test1");
+            sysUser.setUserPassword("123456");
+            sysUser.setUserEmail("test@mybatis.tk");
+            sysUser.setUserInfo("testInfo");
+            sysUser.setHeadImg(new byte[]{1, 2, 3});
+            sysUser.setCreateTime(new Date());
+            //调用UserMapper中的insert方法添加用户
+            int result = userMapper.insert(sysUser);
+            //直插入一条数据
+            Assert.assertEquals(1, result);
+            //id为null，没有给id赋值，并且没有配置回写id的值
+            Assert.assertNotNull(sysUser.getId());
+        } finally {
+            //为了不影响其他的测试，这里选择回滚
+            //由于默认的SqlSessionFactory.openSession()是不自动提交的
+            //因此不手动执行commit也不会提交到数据库
+            sqlSession.rollback();
+            //不要忘记关闭sqlSession
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testInsert2() {
+        //获取SqlSession
+        SqlSession sqlSession = getSqlSession();
+        //获取UserMapper接口
+        try {
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            //创建一个SysUser对象
+            SysUser sysUser = new SysUser();
+            sysUser.setUserName("test1");
+            sysUser.setUserPassword("123456");
+            sysUser.setUserEmail("test@mybatis.tk");
+            sysUser.setUserInfo("testInfo");
+            sysUser.setHeadImg(new byte[]{1, 2, 3});
+            sysUser.setCreateTime(new Date());
+            //调用UserMapper中的insert方法添加用户
+            int result = userMapper.insert2(sysUser);
+            //直插入一条数据
+            Assert.assertEquals(1, result);
+            //id为null，没有给id赋值，并且没有配置回写id的值
+            Assert.assertNotNull(sysUser.getId());
+        } finally {
+            //为了不影响其他的测试，这里选择回滚
+            //由于默认的SqlSessionFactory.openSession()是不自动提交的
+            //因此不手动执行commit也不会提交到数据库
+            //数据存在于Session中，随着程序的关闭而消失
+            sqlSession.rollback();
+            //提交到数据库
+            sqlSession.commit();
+            //不要忘记关闭sqlSession
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testUpdateById() {
+        //获取SqlSession
+        SqlSession sqlSession = getSqlSession();
+        try {
+            //获取UserMapper接口
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            //从数据库查询一个user对象、
+            SysUser sysUser = userMapper.selectById(1L);
+            //当前userName为admin
+            Assert.assertEquals("admin", sysUser.getUserName());
+            //修改用户名
+            sysUser.setUserName("admin_test");
+            //修改邮箱
+            sysUser.setUserEmail("test@mybatis.tk");
+            //更新数据，特别注意，这里的返回值result是执行的SQL影响的行数
+            int result = userMapper.updateById(sysUser);
+            //只更新一条数据
+            Assert.assertEquals(1, result);
+            //根据当前id查询修改后的数据
+            sysUser = userMapper.selectById(1L);
+            //修改后的名字是admin_test
+            Assert.assertEquals("admin_test", sysUser.getUserName());
+
+        } finally {
+            //为了不影响其他测试这里选择回滚
+            //因为SqlSessionFactory.openSession()是不自动提交的
+            //因此不手动执行commit也不会提交到数据库
+            sqlSession.rollback();
+            //不要忘记关闭SqlSession
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testDeleteById(){
+        //获取SqlSession
+        SqlSession sqlSession = getSqlSession();
+        try {
+            //获取UserMapper接口
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            //从数据库查询一个sysUser对象了，根据id=1查询
+            SysUser sysUser1 = userMapper.selectById(1L);
+            //现在还能查询出sysUser对象
+            Assert.assertNotNull(sysUser1);
+            //调用方法删除
+            Assert.assertEquals(1, userMapper.deleteById(1L));
+            //再次查询时，此时的值应该为null
+            Assert.assertNull(userMapper.selectById(1L));
+        } finally {
+            //为了不影响其他测试，这里选择回滚
+            //由于默认的SqlSessionFactory.openSqlSession是不自动提交的
+            //因此不手动commit也不会提交到数据库
+            sqlSession.rollback();
+            //不要忘记关闭SqlSession
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testSelectRolesByUserIdAndRoleEnabled(){
+        //获取SqlSession
+        SqlSession sqlSession = getSqlSession();
+        try {
+            //获取UserMapper接口
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            //调用selectRolesByUserIdAndRoleEnable方法查询用户的角色
+            List<SysRole> roleList = userMapper.selectRolesByUserIdAndRoleEnabled(1L, 1);
+            //结果不为空
+            Assert.assertNotNull(roleList);
+            //角色大于0个
+            Assert.assertTrue(roleList.size() > 0);
+        } finally {
+            //不要忘记关闭SqlSession
+            sqlSession.close();
+        }
+    }
+}

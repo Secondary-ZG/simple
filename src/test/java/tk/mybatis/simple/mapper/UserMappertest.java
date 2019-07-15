@@ -4,9 +4,11 @@ import org.apache.ibatis.session.SqlSession;
 import org.junit.Assert;
 import org.junit.Test;
 import tk.mybatis.simple.mapper.base.BaseMapperTest;
+import tk.mybatis.simple.model.MyMapperProxy;
 import tk.mybatis.simple.model.SysRole;
 import tk.mybatis.simple.model.SysUser;
 
+import java.lang.reflect.Proxy;
 import java.util.Date;
 import java.util.List;
 
@@ -216,5 +218,18 @@ public class UserMappertest extends BaseMapperTest {
             //不要忘记关闭SqlSession
             sqlSession.close();
         }
+    }
+
+    @Test
+    public void testMyMapperProxy() {
+        //获取SqlSession
+        SqlSession sqlSession = getSqlSession();
+        //获取UserMapper接口
+        MyMapperProxy userMapperProxy = new MyMapperProxy(UserMapper.class, sqlSession);
+        UserMapper userMapper = (UserMapper) Proxy.newProxyInstance(
+                Thread.currentThread().getContextClassLoader(), new Class[]{UserMapper.class},
+                userMapperProxy);
+        //调用selectAll方法
+        List<SysUser> userList = userMapper.selectAll();
     }
 }

@@ -4,7 +4,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.junit.Assert;
 import org.junit.Test;
 import tk.mybatis.simple.mapper.base.BaseMapperTest;
-import tk.mybatis.simple.model.MyMapperProxy;
+import tk.mybatis.simple.proxy.MyMapperProxy;
 import tk.mybatis.simple.model.SysRole;
 import tk.mybatis.simple.model.SysUser;
 

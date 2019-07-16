@@ -1,4 +1,4 @@
-package tk.mybatis.simple.model;
+package tk.mybatis.simple.proxy;
 
 import org.apache.ibatis.session.SqlSession;
 

@@ -12,6 +12,7 @@ import java.util.List;
  * On 2019/7/15 21:56
  * Description: 代理类
  */
+//TODO 有待从0到1学习Java动态代理
 public class MyMapperProxy<T> implements InvocationHandler {
     private Class<T> mapperInterface;
     private SqlSession sqlSession;

@@ -18,7 +18,7 @@ import java.util.List;
  * On 2019/7/7 16:09
  * Description: 用户mapper测试类
  */
-public class UserMappertest extends BaseMapperTest {
+public class UserMapperTest extends BaseMapperTest {
 
     @Test
     public void testSelectById() {

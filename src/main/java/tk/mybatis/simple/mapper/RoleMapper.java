@@ -1,9 +1,6 @@
 package tk.mybatis.simple.mapper;
 
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.ResultMap;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import tk.mybatis.simple.model.SysRole;
 
 import java.util.List;
@@ -39,4 +36,33 @@ public interface RoleMapper {
     @ResultMap("roleResultMap")
     @Select("select * from sys_role")
     List<SysRole> selectAll();
+
+    /**
+     * 无自增主键返回
+     * @param sysRole
+     * @return
+     */
+    @Insert({"insert into sys_role(id, role_name, enabled, create_by, create_time)" +
+             "values(#{id}, #{roleName}, #{enabled}, #{createBy}, #{createTime, jdbcType = TIMESTAMP})"})
+    int insert(SysRole sysRole);
+
+    /**
+     * 返回自增主键
+     * @param sysRole
+     * @return
+     */
+    @Insert({"insert into sys_role(role_name, enabled, create_by, create_time)" +
+            "values(#{roleName}, #{enabled}, #{createBy}, #{createTime, jdbcType = TIMESTAMP})"})
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    int insert2(SysRole sysRole);
+
+    /**
+     * 返回非自增主键
+     * @param sysRole
+     * @return
+     */
+    @Insert({"insert into sys_role(role_name, enabled, create_by, create_time)" +
+            "values(#{roleName}, #{enabled}, #{createBy}, #{createTime, jdbcType = TIMESTAMP})"})
+    @SelectKey(statement = "SELECT LAST_INSERT_ID()", keyProperty = "id", resultType = Long.class, before = false)
+    int insert3(SysRole sysRole);
 }

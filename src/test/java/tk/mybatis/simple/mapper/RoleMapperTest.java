@@ -164,4 +164,62 @@ public class RoleMapperTest extends BaseMapperTest {
         }
     }
 
+    @Test
+    public void testUpdateById() {
+        //获取SqlSession
+        SqlSession sqlSession = getSqlSession();
+        try {
+            //获取RoleMapper接口
+            RoleMapper roleMapper = sqlSession.getMapper(RoleMapper.class);
+            //从数据库查询一条SysRole对象
+            SysRole sysRole = roleMapper.selectById(1L);
+            //当前RoleName为管理员
+            Assert.assertEquals("管理员", sysRole.getRoleName());
+            //修改用户名
+            sysRole.setRoleName("admin_test");
+            //更新数据
+            int result = roleMapper.updateById(sysRole);
+            //只更新一条数据
+            Assert.assertEquals(1, result);
+            //根据用户id查询修改后的数据
+            sysRole = roleMapper.selectById(1L);
+            //修改后的角色名称为admin_test
+            Assert.assertEquals("admin_test", sysRole.getRoleName());
+        } finally {
+            //为了不影响之后的测试，这选择回滚
+            //因为SqlSessionFactory.openSqlSession()是不自动提交的
+            //因此不手动执行commit也不会提交到数据库
+            sqlSession.rollback();
+            //不要忘记关闭SqlSession
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testDeleteById(){
+        //获取SqlSession
+        SqlSession sqlSession = getSqlSession();
+        try {
+            //获取RoleMapper接口
+            RoleMapper roleMapper = getSqlSession().getMapper(RoleMapper.class);
+            //查询指定角色
+            SysRole sysRole = roleMapper.selectById(1L);
+            //角色不为空
+            Assert.assertNotNull(sysRole);
+            //调用deleteById方法删除指定角色
+            int result = roleMapper.deleteById(1L);
+            //值删除了一条指定数据
+            Assert.assertEquals(1, result);
+            //删除之后值为null
+            Assert.assertNull(roleMapper.selectById(1L));
+        } finally {
+            //为了不影响之后的测试这里选择回滚
+            //因为SqlSessionFactory.openSqlSession()方法不自动提交
+            //因此不手动执行commit也不会提交到数据库
+            sqlSession.rollback();
+            //不要忘记关闭SqlSession
+            sqlSession.close();
+        }
+    }
+
 }

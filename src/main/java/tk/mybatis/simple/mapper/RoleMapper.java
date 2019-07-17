@@ -65,4 +65,13 @@ public interface RoleMapper {
             "values(#{roleName}, #{enabled}, #{createBy}, #{createTime, jdbcType = TIMESTAMP})"})
     @SelectKey(statement = "SELECT LAST_INSERT_ID()", keyProperty = "id", resultType = Long.class, before = false)
     int insert3(SysRole sysRole);
+
+    @Update({"update sys_role set role_name = #{roleName}," +
+             "enabled = #{enabled}, create_by = #{createBy}," +
+             "create_time = #{createTime, jdbcType=TIMESTAMP}" +
+             "where id = #{id}"})
+    int updateById(SysRole sysRole);
+
+    @Delete({"delete from sys_role where id = #{id}"})
+    int deleteById(Long id);
 }

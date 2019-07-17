@@ -76,7 +76,6 @@ public class RoleMapperTest extends BaseMapperTest {
         }
     }
 
-    //TODO 待测试
     @Test
     public void testInsert() {
         //获取SqlSession

@@ -224,12 +224,17 @@ public class UserMapperTest extends BaseMapperTest {
     public void testMyMapperProxy() {
         //获取SqlSession
         SqlSession sqlSession = getSqlSession();
-        //获取UserMapper接口
-        MyMapperProxy userMapperProxy = new MyMapperProxy(UserMapper.class, sqlSession);
-        UserMapper userMapper = (UserMapper) Proxy.newProxyInstance(
-                Thread.currentThread().getContextClassLoader(), new Class[]{UserMapper.class},
-                userMapperProxy);
-        //调用selectAll方法
-        List<SysUser> userList = userMapper.selectAll();
+        try {
+            //获取UserMapper接口
+            MyMapperProxy userMapperProxy = new MyMapperProxy(UserMapper.class, sqlSession);
+            UserMapper userMapper = (UserMapper) Proxy.newProxyInstance(
+                    Thread.currentThread().getContextClassLoader(), new Class[]{UserMapper.class},
+                    userMapperProxy);
+            //调用selectAll方法
+            List<SysUser> userList = userMapper.selectAll();
+        } finally {
+            //不要忘记关闭SqlSession
+            sqlSession.close();
+        }
     }
 }

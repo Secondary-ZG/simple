@@ -269,4 +269,36 @@ public class UserMapperTest extends BaseMapperTest {
             sqlSession.close();
         }
     }
+
+    @Test
+    public void testUpdateByIdSelective() {
+        //获取SqlSession
+        SqlSession sqlSession = getSqlSession();
+        try {
+            //获取UserMapper接口
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            //创建一个新的SysUser对象
+            SysUser sysUser = new SysUser();
+            //更新id = 1的用户
+            sysUser.setId(1L);
+            //修改邮箱
+            sysUser.setUserEmail("test@mybatis.tk");
+            //更新邮箱，result返回的时操作数据库的行数
+            int result = userMapper.updateByIdSelective(sysUser);
+            //只更新一条数据
+            Assert.assertEquals(1, result);
+            //根据当前id查询修改后的数据
+            sysUser = userMapper.selectById(1L);
+            //修改后的用户名保持不变，但是邮箱变成了新的
+            Assert.assertEquals("admin", sysUser.getUserName());
+            Assert.assertEquals("test@mybatis.tk", sysUser.getUserEmail());
+        }finally {
+            //为了不影响之后的测试这选择回滚
+            //因为SqlSessionFactory.openSqlSession()方法是不自动提交的
+            //因此不手动执行commit是不会提交到数据库的
+            sqlSession.rollback();
+            //最后不要忘记关闭SqlSession
+            sqlSession.close();
+        }
+    }
 }

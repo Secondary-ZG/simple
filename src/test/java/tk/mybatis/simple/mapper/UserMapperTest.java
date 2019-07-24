@@ -237,4 +237,36 @@ public class UserMapperTest extends BaseMapperTest {
             sqlSession.close();
         }
     }
+
+    @Test
+    public void testSelectByUser() {
+        //获取SqlSession
+        SqlSession sqlSession = getSqlSession();
+        try {
+            //获取UserMapper接口
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            //调用selectByUser方法只查询用户名时
+            SysUser sysUser = new SysUser();
+            sysUser.setUserName("ad");
+            List<SysUser> sysUserList = userMapper.selectByUser(sysUser);
+            Assert.assertTrue(sysUserList.size() > 0);
+
+            //调用selectByUser方法只查询邮箱时
+            sysUser = new SysUser();
+            sysUser.setUserEmail("test@mybatis.tk");
+            sysUserList = userMapper.selectByUser(sysUser);
+            Assert.assertTrue(sysUserList.size() > 0);
+
+            //调用selectByUser方法查询用户名和邮箱时
+            sysUser = new SysUser();
+            sysUser.setUserName("ad");
+            sysUser.setUserEmail("test@mybatis.tk");
+            sysUserList = userMapper.selectByUser(sysUser);
+            //由于没有符合这个要求的，所以查询结果数为0
+            Assert.assertEquals(0, sysUserList.size());
+        } finally {
+            //不要忘记关闭SqlSession
+            sqlSession.close();
+        }
+    }
 }

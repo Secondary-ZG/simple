@@ -136,7 +136,7 @@
                 AND su.user_email = #{userEmail}
               </if>
     </select>
-    
+
     <update id="updateByIdSelective">
         UPDATE sys_user
         SET
@@ -161,4 +161,20 @@
           id = #{id}
         WHERE id = #{id}
     </update>
+
+    <insert id="insert2Selective" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+            sys_user(user_name, user_password,
+                     <if test="userEmail != null and userEmail != ''">
+                         user_email,
+                     </if>
+                     user_info, head_img, create_time)
+        VALUES (#{userName}, #{userPassword},
+                <if test="userEmail != null and userEmail != ''">
+                    #{userEmail},
+                </if>
+                #{userInfo}, #{headImg, jdbcType=BLOB},
+                #{createTime, jdbcType=TIMESTAMP}
+        )
+    </insert>
 </mapper>

@@ -91,4 +91,11 @@ public interface UserMapper {
      * @return
      */
     int updateByIdSelective(SysUser sysUser);
+
+    /**
+     * 添加用户
+     * @param sysUser
+     * @return
+     */
+    int insert2Selective(SysUser sysUser);
 }

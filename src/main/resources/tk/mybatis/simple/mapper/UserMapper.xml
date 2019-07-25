@@ -177,4 +177,28 @@
                 #{createTime, jdbcType=TIMESTAMP}
         )
     </insert>
+    
+    <select id="selectByIdOrUserName" resultType="tk.mybatis.simple.model.SysUser">
+        SELECT
+            id, user_name AS userName,
+            user_email AS userEmail,
+            user_password AS userPassword,
+            user_info AS userInfo,
+            head_img AS headImg,
+            create_time AS createTime
+        FROM
+            sys_user
+        WHERE 1 = 1
+        <choose>
+            <when test="id != null">
+                AND id = #{id}
+            </when>
+            <when test="userName != null and userName != ''">
+                AND user_name = #{userName}
+            </when>
+            <otherwise>
+                AND 1 = 2
+            </otherwise>
+        </choose>
+    </select>
 </mapper>

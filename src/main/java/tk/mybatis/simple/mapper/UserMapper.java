@@ -98,4 +98,11 @@ public interface UserMapper {
      * @return
      */
     int insert2Selective(SysUser sysUser);
+
+    /**
+     * 根据用户id或者用户名查询
+     * @param sysUser
+     * @return
+     */
+    SysUser selectByIdOrUserName(SysUser sysUser);
 }

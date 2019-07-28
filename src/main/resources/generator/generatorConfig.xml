@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <!-- 1、context属性targetRuntime设置为Mybatis3Simple，主要是为了避免生成与Example相关的代码和方法，
+    如果需要Example相关的代码，可以设置为Mybatis3.-->
+    <!-- 2、context属性defaultModelType设置为flat，目的是使每个表只生成一个实体类，当类没有复杂的继承时，
+     使用起来更方便-->
+    <context id="mysqlContext" targetRuntime="Mybatis3Simple" defaultModelType="flat">
+        <!-- 3、因为此处书库库使用的是MySql，所有分隔符使用 ` -->
+        <property name="beginningDelimiter" value="`" />
+        <property name="endingDelimiter" value="`" />
+        <!-- 4、注释生成器commentGenerator中配置生成数据库中的注释信息，并且禁止在注释中生成日期 -->
+        <commentGenerator>
+            <property name="suppressDate" value="true" />
+            <property name="addRemarkComments" value="true" />
+        </commentGenerator>
+
+        <!-- 5、简单的配置了要连接的数据源信息 -->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/mybatis"
+                        userId="root"
+                        password="123456">
+        </jdbcConnection>
+
+        <!-- 6、javaModelGenerator配置生成的包名为test.model，这个包名可以根据自己代码的规范进行修改，
+        targetProject设置在src\main\java中 -->
+        <javaModelGenerator targetPackage="test.model" targetProject="src\main\java">
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+        <!-- 7、sqlMapGenerator配置生成Mapper.xml文件的位置，这里的targetProject设置为src\main\
+        resources，没有放在src\main\java中 -->
+        <sqlMapGenerator targetPackage="test.xml" targetProject="src\main\resources" />
+
+        <!-- 8、javaClientGenerator配置生成Mapper接口的位置，这里采用的XMLMAPPER类型，接口和XML完全
+        分离 -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="test.do" targetProject="src\main\java" />
+
+        <!-- 9、最后的table使用通配符“%”匹配数据库中所有的表，所有表都有主键自增的id字段，sqlStatement
+        针对当前数据库配置MySql -->
+        <table tableName="%">
+            <generatedKey column="id" sqlStatement="MySql" />
+        </table>
+    </context>
+</generatorConfiguration>

@@ -201,4 +201,19 @@
             </otherwise>
         </choose>
     </select>
+
+    <select id="selectUserAndRoleById" resultType="tk.mybatis.simple.model.SysUser">
+        SELECT
+            su.id, su.user_name AS userName, su.user_password AS userPassword,
+            su.user_email AS userEmail, su.user_info AS userInfo,
+            su.head_img AS headImg, su.create_time AS createTime,
+            sr.id AS `sysRole.id`, sr.role_name AS `sysRole.roleName`,
+            sr.enabled AS `sysRole.enabled`, sr.create_by AS `sysRole.createBy`,
+            sr.create_time AS `sysRole.createTime`
+        FROM
+            sys_user su
+        INNER JOIN sys_user_role sur ON sur.user_id = su.id
+        INNER JOIN sys_role sr ON sr.id = sur.role_id
+        WHERE su.id = #{id}
+    </select>
 </mapper>

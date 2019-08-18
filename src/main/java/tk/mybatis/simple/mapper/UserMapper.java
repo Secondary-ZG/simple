@@ -112,4 +112,11 @@ public interface UserMapper {
      * @return
      */
     SysUser selectUserAndRoleById(Long id);
+
+    /**
+     * 根据用户id获取用户信息和用户的角色信息
+     * @param id
+     * @return
+     */
+    SysUser selectUserAndRoleById2(Long id);
 }

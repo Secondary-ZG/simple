@@ -381,4 +381,24 @@ public class UserMapperTest extends BaseMapperTest {
             sqlSession.close();
         }
     }
+
+    @Test
+    public void testSelectUserAndRoleById2() {
+        //获取SqlSession
+        SqlSession sqlSession = getSqlSession();
+        try {
+            //获取UserMapper接口
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            //特别注意，在测试数据中，id=1L的用户有两个角色，不适合这个例子
+            //这里使用只有一个角色的用户(id=1001L)
+            SysUser sysUser = userMapper.selectUserAndRoleById2(1001L);
+            //sysUser不为空Assert.assertNotNull(sysUser);
+            //user.role也不为空
+            Assert.assertNotNull(sysUser.getSysRole());
+        } finally {
+            //不要忘记关闭SqlSession
+            sqlSession.close();
+        }
+    }
+
 }

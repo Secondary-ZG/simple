@@ -12,31 +12,11 @@
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
     </resultMap>
 
-    <resultMap id="userRoleMap" type="tk.mybatis.simple.model.SysUser">
-        <id property="id" column="id" />
-        <result property="userName" column="user_name" />
-        <result property="userPassword" column="user_password" />
-        <result property="userEmail" column="user_email" />
-        <result property="userInfo" column="user_info" />
-        <result property="headImg" column="head_img" jdbcType="BLOB" />
-        <result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
-        <!-- role相关属性 -->
-        <result property="sysRole.id" column="role_id" />
-        <result property="sysRole.roleName" column="role_name" />
-        <result property="sysRole.enabled" column="enabled" />
-        <result property="sysRole.createBy" column="create_by" />
-        <result property="sysRole.createTime" column="role_create_ime" jdbcType="TIMESTAMP" />
+    <resultMap id="userRoleMap" extends="userMap"
+               type="tk.mybatis.simple.model.SysUser">
+        <association property="sysRole" columnPrefix="sysRole_"
+                     resultMap="tk.mybatis.simple.mapper.RoleMapper.roleMap" />
     </resultMap>
-
-    <!--<resultMap id="userRoleMap" extends="userMap"-->
-               <!--type="tk.mybatis.simple.model.SysUser">-->
-        <!--<result property="sysRole.id" column="role_id" />-->
-        <!--<result property="sysRole.roleName" column="role_name" />-->
-        <!--<result property="sysRole.enabled" column="enabled" />-->
-        <!--<result property="sysRole.createBy" column="create_by" />-->
-        <!--<result property="sysRole.createTime" column="role_create_time"-->
-                <!--jdbcType="TIMESTAMP" />-->
-    <!--</resultMap>-->
     
     <select id="selectById" resultMap="userMap">
         SELECT
@@ -245,11 +225,11 @@
 
     <select id="selectUserAndRoleById2" resultMap="userRoleMap">
         SELECT
-            su.id, su.user_name, su.user_password,
-            su.user_email, su.user_info, su.head_img,
-            su.create_time, sr.id role_id, sr.role_name,
-            sr.enabled enabled, sr.create_by create_by,
-            sr.create_time role_create_time
+            su.id, su.user_name AS userName, su.user_password AS userPassword,
+            su.user_email AS userEmail, su.user_info AS userInfo, su.head_img AS headImg,
+            su.create_time AS createTime, sr.id AS sysRole_id, sr.role_name AS sysRole_roleName,
+            sr.enabled AS sysRole_enabled, sr.create_by AS sysRole_createBy,
+            sr.create_time AS sysRole_createTime
         FROM sys_user su
         INNER JOIN sys_user_role sur ON sur.user_id = su.id
         INNER JOIN sys_role sr ON sr.id = sur.role_id
